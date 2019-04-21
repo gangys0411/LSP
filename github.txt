@@ -1,0 +1,12 @@
+
+
+git config --global user.name // 계정 입력
+git config --global user.email // 메일 입력
+git clone 주소 // 주소에 있는 모든 파일 가져오기
+git init // 깃 명령어 사용가능
+git remote add origin 주소 // 리모트 주소 추가
+git add 파일 // 파일 추가
+git add -A // 모든 파일 추가
+git commit -m "메세지" // 커밋
+git push // 주소에 파일 저장하기
+git pull // 주소에서 파일 가져오기
