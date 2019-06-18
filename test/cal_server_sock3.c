@@ -6,37 +6,23 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
 
-#define SOCK_PATH "msg_socket"
+#define SOCK_PATH "cal_socket"
 
-typedef struct user
+typedef struct massage
 {	
-	char ID[20];
-	char PW[20];
-	int key;
-}user;
+	int type;
+	int operator;
+	double value[2];
+}massage;
 
-typedef struct
-{
-	long data_type;
-	int data_num;
-	char data_buff[1024];
-} msg_t;
-
-int main(void)
+int main (void)
 {
 	int s, c, len;
 	unsigned t;
 	struct sockaddr_un local,remote;
 	char str[100];
-	struct user user;
-
-	int msgkey;
-	int msqid;
-	int ndx=0;
-	msg_t data;
+	struct massage msg;
 
 	pid_t pid;
 
@@ -63,8 +49,6 @@ int main(void)
 		exit(1);
 	}
 
-		
-	
 	for(;;)
 	{
 		int done, n;
@@ -82,62 +66,58 @@ int main(void)
 		done =0;
 
 		pid=fork();
+		
 
 		if(pid==0)
 		{
 
+			do
 			{
-				n=recv(c,&user,100,0);
+				n=recv(c,&msg,100,0);
 				if (n<=0)
 				{
 					if (n<0)
 						perror("recv");
 					done=1;
 				}
+			
+				msg.type=2;
+				if(msg.operator==1)
+				{
+					msg.value[0]=msg.value[0]+msg.value[1];
+				}else
+			
+				if(msg.operator==2)
+			
+				{
+					msg.value[0]=msg.value[0]-msg.value[1];
+				}else
+			
+				if(msg.operator==3)
+				{
+					msg.value[0]=msg.value[0]*msg.value[1];
+				}else
 
-				user.key=1;
-				msgkey=ftok(user.ID, user.key);
-if(-1==(msqid=msgget((key_t)msgkey,IPC_CREAT|0666)))
-	{
-		perror("msgget() error");
-		exit(1);
-	}
+				if(msg.operator==4)
+				{
+					msg.value[0]=msg.value[0]/msg.value[1];
+				}else
+					msg.value[0]=0;
+
 				if (!done)
-					if(send(c,&user,n,0)<0)
+					if(send(c,&msg,n,0)<0)
 					{
 						perror("send");
 						done=1;
 					}
 			}
-
-
-
-
-			while(1)
-			{
-				data.data_type=1;
-				data.data_num=ndx++;
-
-				sprintf(data.data_buff, "type=%ld, ndx=%d", data.data_type, ndx);
-				if(-1==msgsnd(msqid, &data, sizeof(msg_t)-sizeof(long),0))
-				{
-					perror("msgsnd() error");
-					exit(1);
-				}
-				sleep(1);
-				
-				if(send(c,&user,n,0)<0)
-				{
-					perror("send");
-					done=1;
-				}
-			}
-
-			exit(1);
+			while(!done);
+			exit(0);
 		}
+
 		close(c);
 	}
+	
 
-
-	return 0;
+return 0;
 }
