@@ -50,7 +50,7 @@ int main()
 		}else
 		{
 			data.data_type=1;
-			data.data_num=ndx;
+			data.data_num=ndx++;
 
 			sprintf(data.data_buff, "type=%ld, ndx=%d", data.data_type, ndx);
 
