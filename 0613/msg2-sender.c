@@ -39,7 +39,7 @@ int main()
 		if(pid==0)
 		{
 			data.data_type=2;
-			data.data_num=ndx;
+			data.data_num=ndx++;
 
 			sprintf(data.data_buff, "type=%ld, ndx=%d", data.data_type, ndx);
 			if(-1==msgsnd(msqid2, &data, sizeof(msg_t)-sizeof(long),0))

@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 	}
 	printf("# of msg in queue: %ld\n", msqstat.msg_qnum);
 	
-	for(i=0; i<msqstat.msg_qnum; i++)
+	while(1)
 	{
 		if(-1==msgrcv(msqid,&data, sizeof(msg_t)-sizeof(long), atoi(argv[1]), 0))
 		{
